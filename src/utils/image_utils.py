@@ -109,9 +109,19 @@ def convert_to_gray(image: np.ndarray) -> np.ndarray:
     ----------
     grayscale version of image
     """
-    return (.2989 * image[:,:,0] \
-            + .5870 * image[:,:,1] \
-            + .1140 * image[:,:,2]).astype(image.dtype)
+    shape = image.shape
+    # already single channel
+    if len(shape) == 3:
+        if shape[2] == 3:
+            return (.2989 * image[:,:,0] \
+                    + .5870 * image[:,:,1] \
+                    + .1140 * image[:,:,2]).astype(image.dtype)
+        else:
+            raise ValueError('Image does not have 3 color channels')
+    elif len(shape) == 2:
+        return image
+    else:
+        raise ValueError('Unrecognized image shape:', shape)
 
 
 def normalize_color(color_image: str | np.ndarray,
