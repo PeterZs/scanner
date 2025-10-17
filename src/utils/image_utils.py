@@ -73,8 +73,10 @@ def homogeneous_coordinates(points2D: np.ndarray) -> np.ndarray:
     homegeneous coordinates
         array (shape Nx3) of homogenous coordinates
     """
-    points = np.array(points2D, dtype=np.float32).reshape((-1,2))
-    return np.concatenate([points, np.ones((points.shape[0], 1))], axis=1).reshape((-1,3))
+    points2D = np.asarray(points2D).reshape((-1,2))
+    points = np.ones(shape=(points2D.shape[0],3), dtype=np.float32)
+    points[:,:-1] = points2D
+    return points
 
 
 def colorize(image: np.ndarray) -> np.ndarray:
@@ -110,7 +112,6 @@ def convert_to_gray(image: np.ndarray) -> np.ndarray:
     grayscale version of image
     """
     shape = image.shape
-    # already single channel
     if len(shape) == 3:
         if shape[2] == 3:
             return (.2989 * image[:,:,0] \
