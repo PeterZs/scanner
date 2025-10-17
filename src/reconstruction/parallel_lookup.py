@@ -26,7 +26,7 @@ def ray_search(L, Q):
     return best_idx, best_val
 
 @jit(nopython=True, parallel=True)
-def lookup_3dim_no_mask(L, Q):
+def lookup_3dim_no_mask(L, D, Q):
     """
     This function relies on numba to parallelize lookup on L given Q.
 
@@ -48,14 +48,16 @@ def lookup_3dim_no_mask(L, Q):
 
     minD = np.full(HW, fill_value=-1, dtype=np.int32)
     loss = np.full(HW, fill_value=float('inf'), dtype=np.float32)
+    depth = np.full(HW, fill_value=-1., dtype=np.float32)
 
     for i in prange(HW):
         best_idx, best_val = ray_search(L[i], Q[i])
 
         minD[i] = best_idx
+        depth[i] = D[i, best_idx]
         loss[i] = best_val
 
-    return minD, loss
+    return depth, minD, loss
 
 @jit(nopython=True, parallel=True)
 def lookup_3dim_with_mask(L, Q, mask):
@@ -84,15 +86,17 @@ def lookup_3dim_with_mask(L, Q, mask):
 
     minD = np.full(HW, fill_value=-1, dtype=np.int32)
     loss = np.full(HW, fill_value=float('inf'), dtype=np.float32)
+    depth = np.full(HW, fill_value=-1., dtype=np.float32)
 
     for i in prange(HW):
         if mask[i]:
             best_idx, best_val = ray_search(L[i], Q[i])
 
             minD[i] = best_idx
+            depth[i] = D[i,best_idx]
             loss[i] = best_val
 
-    return minD, loss
+    return depth, minD, loss
 
 
 @jit(nopython=True, parallel=True)
@@ -118,18 +122,20 @@ def lookup_4dim_no_mask(L, Q):
 
     minD = np.full((H,W), fill_value=-1, dtype=np.int32)
     loss = np.full((H,W), fill_value=float('inf'), dtype=np.float32)
+    depth = np.full((H,W), fill_value=-1., dtype=np.float32)
 
     for i in prange(H):
         for j in range(W):
             best_idx, best_val = ray_search(L[i,j], Q[i,j])
 
             minD[i,j] = best_idx
+            depth[i,j] = D[i,j,best_idx]
             loss[i,j] = best_val
 
-    return minD, loss
+    return depth, minD, loss
 
 @jit(nopython=True, parallel=True)
-def lookup_4dim_with_mask(L, Q, mask):
+def lookup_4dim_with_mask(L, D, Q, mask):
     """
     This function relies on numba to parallelize lookup on L given Q.
 
@@ -155,6 +161,7 @@ def lookup_4dim_with_mask(L, Q, mask):
 
     minD = np.full((H,W), fill_value=-1, dtype=np.int32)
     loss = np.full((H,W), fill_value=float('inf'), dtype=np.float32)
+    depth = np.full((H,W), fill_value=-1., dtype=np.float32)
 
     for i in prange(H):
         for j in range(W):
@@ -162,12 +169,13 @@ def lookup_4dim_with_mask(L, Q, mask):
                 best_idx, best_val = ray_search(L[i,j], Q[i,j])
 
                 minD[i,j] = best_idx
+                depth[i,j] = D[i,j,best_idx]
                 loss[i,j] = best_val
 
-    return minD, loss
+    return depth, minD, loss
 
 
-def lookup(L, Q, mask=None):
+def lookup(L, D, Q, mask=None):
     """
     Overloaded parallel lookup function, where mask is an optional argument.
 
@@ -193,14 +201,14 @@ def lookup(L, Q, mask=None):
 
     if len(Lshape) == 3:
         if mask is None:
-            return lookup_3dim_no_mask(L, Q)
+            return lookup_3dim_no_mask(L, D, Q)
         else:
-            return lookup_3dim_with_mask(L, Q, mask)
+            return lookup_3dim_with_mask(L, D, Q, mask)
     elif len(Lshape) == 4:
         if mask is None:
-            return lookup_4dim_no_mask(L, Q)
+            return lookup_4dim_no_mask(L, D, Q)
         else:
-            return lookup_4dim_with_mask(L, Q, mask)
+            return lookup_4dim_with_mask(L, D, Q, mask)
     else:
         raise ValueError('Unrecognized shape of LookUp Table')
 
