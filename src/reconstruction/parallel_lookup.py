@@ -60,7 +60,7 @@ def lookup_3dim_no_mask(L, D, Q):
     return depth, minD, loss
 
 @jit(nopython=True, parallel=True)
-def lookup_3dim_with_mask(L, Q, mask):
+def lookup_3dim_with_mask(L, D, Q, mask):
     """
     This function relies on numba to parallelize lookup on L given Q.
 
@@ -100,7 +100,7 @@ def lookup_3dim_with_mask(L, Q, mask):
 
 
 @jit(nopython=True, parallel=True)
-def lookup_4dim_no_mask(L, Q):
+def lookup_4dim_no_mask(L, D, Q):
     """
     This function relies on numba to parallelize lookup on L given Q.
 
