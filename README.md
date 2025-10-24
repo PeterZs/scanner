@@ -12,6 +12,7 @@
 
 This repository contains the main algorithmic implementations of our work ["LookUp3D: Data-Driven 3D Scanning"](https://github.com/geometryprocessing/scanner/). For supplementary material, please see [here](https://github.com/geometryprocessing/scanner/).
 
+For scripts on controlling hardware, please see [this repositry](https://github.com/geometryprocessing/scanner-capture/). It also contains the firmware for controlling the high-speed analog projector we developed for LookUp3D.
 
 ## TODO:
 COMING SOON.
