@@ -10,7 +10,9 @@
 
 ![Bunny in Free Fall at 450 FPS](media/teaser.png)
 
-This repository contains the main algorithmic implementations of our work ["LookUp3D: Data-Driven 3D Scanning"](https://github.com/geometryprocessing/scanner/). For supplementary material, please see [here](https://github.com/geometryprocessing/scanner/).
+This repository contains the main algorithmic implementations of our work ["LookUp3D: Data-Driven 3D Scanning"](https://arxiv.org/abs/2405.14882).
+
+For data (such as the reconstructed point clouds of our paper or to demo how our scanning works), please see our [NYU UltraViolet repository](https://doi.org/10.58153/1n4p2-ygf77).
 
 For scripts on controlling hardware, please see [this repository](https://github.com/geometryprocessing/scanner-capture/). It also contains the firmware for controlling the high-speed analog projector we developed for LookUp3D.
 
@@ -18,5 +20,5 @@ For scripts on controlling hardware, please see [this repository](https://github
 COMING SOON.
 
 # Citation
-If you use this work/data, please cite our paper:
+If you use this work/data, please be kind to cite our paper:
 COMING SOON.

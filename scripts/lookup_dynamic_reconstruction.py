@@ -1,14 +1,11 @@
-import argparse
-import os
-
-import numpy as np
-
 import sys
-sys.path.append('../')
+import os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../'))
 from src.reconstruction.lookup import load_lut, process_position, save_reconstruction_outputs, naive_lut, tc_lut, c2f_lut
 from src.utils.image_utils import replace_with_nearest, gaussian_blur
 from src.reconstruction.configs import LookUp3DConfig, apply_cmdline_args, get_config, is_valid_config
 from src.utils.file_io import get_all_folders
+import numpy as np
 
 def reconstruct(lut, dep, base_path: str, config: LookUp3DConfig):
 
@@ -85,6 +82,7 @@ def reconstruct(lut, dep, base_path: str, config: LookUp3DConfig):
 
 
 def main(args):
+    import argparse
     parser = argparse.ArgumentParser(description="Reconstructs scenes with LookUp3D")
     parser.add_argument('-i', '--input', type=str, default=None, required=True,
                         help='Path to input folder to run reconstruction on. It should have' \

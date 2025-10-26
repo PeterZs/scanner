@@ -870,18 +870,6 @@ class LookUpCalibration:
         result3D = np.matmul(points, R.T) + T.T
         depth = result3D[:,2]
 
-        # result3D = np.matmul((points - T.T), R)
-        # # depth = result3D[:,2]
-        # # TODO: fix this -- should not be abs, it should simply already be positive
-        # depth = np.abs(result3D[:,2])
-        
-        # bs = np.matmul(R.T, (xs - T).T).T
-        # idx = (roi[0] < bs[:, 0]) & (bs[:, 0] < roi[2]) & \
-        #     (roi[1] < bs[:, 1]) & (bs[:, 1] < roi[3])
-        # bs = None
-
-        # depth[~idx] = 0
-
         depth = depth.reshape((height, width))
         if save_result:
             np.savez_compressed(os.path.join(folder, f"depth.npz"), depth=depth)
@@ -910,26 +898,3 @@ class LookUpCalibration:
         if normalize:
             self.normalize_positions()
         self.stack_results()
-        
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Look Up Calibration and Reconstruction")
-    parser.add_argument('-c', '--calibration_config', type=str, default=None,
-                        help="Path to config for Look Up Calibration")
-    parser.add_argument('--depth', default=False, action=argparse.BooleanOptionalAction,
-                        help="Flag to set if LookUp Calibration should (Re)Calculate Depth")
-    parser.add_argument('--normalize', default=False, action=argparse.BooleanOptionalAction,
-                        help="Flag to set if LookUp should (Re)Normalize Pattern")
-    # parser.add_argument('--gpu', default=False, action=argparse.BooleanOptionalAction,
-                        # help="Flag to set if LookUp Reconstruction should use GPU (cuda only)")
-    # parser.add_argument('-r', '--reconstruction_config', type=str, default=None,
-                    # help='Path to config JSON with parameters for LookUp Reconstruction')
-
-    args = parser.parse_args()
-
-    if args.calibration_config is not None:
-        luc = LookUpCalibration(args.calibration_config)
-        luc.run(args.depth, args.normalize)
-
-    # if args.reconstruction_config is not None:
-    #     lur = LookUpReconstruction(args.reconstruction_config)
-    #     lur.run(args.normalize, args.gpu)
