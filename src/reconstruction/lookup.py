@@ -790,6 +790,11 @@ class LookUpCalibration:
                                                     camera.K,
                                                     camera.dist_coeffs)
             rvec = result['rvec'].ravel()
+            # this is an arbitrary choice to avoid the cases with
+            # indistinguishable rvec and -rvec, so make it such 
+            # that rvec[-1] is always positive
+            if rvec[-1] < 0:
+                rvec *= -1.
             tvec = result['tvec'].ravel()
 
         save_json({
@@ -823,7 +828,9 @@ class LookUpCalibration:
             N = -N
         middle_index = np.nanargmin(np.linalg.norm(tvecs - C, axis=1))
 
-        steps = np.linalg.norm(np.diff(tvecs, axis=0), axis=1)
+        # this dot product works because we enforced \|N\|^2 = 1.0,
+        # so we don't need to divide it by that to get the step in the N direction
+        steps = np.dot(np.diff(tvecs, axis=0), N)
         idx = np.abs(steps - np.nanmedian(steps)) < np.nanstd(steps)
         stride = np.nanmean(steps[idx])
 
