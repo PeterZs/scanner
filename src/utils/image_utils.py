@@ -1,7 +1,7 @@
 import cv2
 from copy import deepcopy
 import numpy as np
-from scipy.ndimage import gaussian_filter, generate_binary_structure, binary_erosion, distance_transform_edt
+from scipy.ndimage import median_filter, gaussian_filter, generate_binary_structure, binary_erosion, distance_transform_edt
 import OpenEXR
 
 def undistort_camera_points(points2D: np.ndarray,
@@ -252,6 +252,41 @@ def gaussian_blur(image: np.ndarray,
 
     for idx in range(shape[2]):
         img[:,:,idx] = gaussian_filter(img[:,:,idx], sigma=sigmas[idx], mode='nearest')
+    return np.squeeze(img)
+
+def median_blur(image: np.ndarray,
+                sizes: int | float | list[float] | list[int]) -> np.ndarray:
+    """
+    Take image and apply Gaussian blur kernel.
+    Function creates a copy of image and returns the blurred version.
+
+    Parameters
+    ----------
+    image : array_like
+        image array
+    sigmas : list[float]
+        list of sigma (float) for Gaussian filter.
+        Sigma values will be applied to each image channel in the order they are passed.
+
+    Returns
+    ----------
+    blurred copy of image
+    """
+    img = deepcopy(image)
+    img = np.atleast_3d(img)
+    shape = img.shape
+    if isinstance(sizes, set) or isinstance(sizes, tuple):
+        sizes = list(sizes)
+    else:
+        sizes = [sizes]
+    if len(sizes) != shape[2]:
+        if len(sizes) == 1:
+            sizes = np.repeat(sizes, shape[2])
+        else:
+            raise ValueError(f'Either sigmas is a single value or a list that matches the number of channels in image. Received {sigmas}')
+
+    for idx in range(shape[2]):
+        img[:,:,idx] = median_filter(img[:,:,idx], size=sizes[idx], mode='nearest')
     return np.squeeze(img)
 
 
