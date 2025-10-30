@@ -118,7 +118,7 @@ class LookUp3DConfig(ReconstructionConfig):
                 verbose: bool = True,
                 use_binary_mask: bool = False, use_pattern_for_mask: bool = False, mask_thr: float = 0.2,
                 denoise_input: bool = False, denoise_cutoff: int = 0,
-                blur_input: bool = False, blur_input_sigma: bool = 0,
+                blur_input: bool = False, blur_input_sigma: float = 0,
                 loss_thr: float = 0.2,
                 is_lowrank: bool = False,
                 use_gpu: bool = False, gpu_device: int = 0, block_size: int = 65536,
