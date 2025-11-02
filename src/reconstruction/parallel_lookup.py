@@ -34,11 +34,15 @@ def lookup_3dim_no_mask(L, D, Q):
     ----------
     L : HW x Z x C numpy array of float32
         flattened lookup table
+    D : HW x Z numpy array of float 32
+        flattened calibrated depth values associated with lookup table
     Q : HW x C numpy array of float32
         flattened normalized image to query on the lookup table
     
     Returns
     -------
+    depth_map: HW numpy array of float32
+        depth value for each pixel
     minD : HW numpy array of int32
         index of the minimum value along Z axis
     loss_map : HW numpy array of float32
@@ -68,6 +72,8 @@ def lookup_3dim_with_mask(L, D, Q, mask):
     ----------
     L : HW x Z x C numpy array of float32
         flattened lookup table
+    D : HW x Z numpy array of float 32
+        flattened calibrated depth values associated with lookup table
     Q : HW x C numpy array of float32
         flattened normalized image to query on the lookup table
     mask : HW numpy of bool
@@ -77,6 +83,8 @@ def lookup_3dim_with_mask(L, D, Q, mask):
     
     Returns
     -------
+    depth_map: HW numpy array of float32
+        depth value for each pixel
     minD : HW numpy array of int32
         index of the minimum value along Z axis
     loss_map : HW numpy array of float32
@@ -108,11 +116,15 @@ def lookup_4dim_no_mask(L, D, Q):
     ----------
     L : H x W x Z x C numpy array of float32
         lookup table
+    D : H x W x Z numpy array of float 32
+        calibrated depth values associated with lookup table
     Q : H x W x C numpy array of float32
         normalized image to query on the lookup table
     
     Returns
     -------
+    depth_map: H x W numpy array of float32
+        depth value for each pixel
     minD : H x W numpy array of int32
         index of the minimum value along Z axis
     loss_map : H x W numpy array of float32
@@ -143,6 +155,8 @@ def lookup_4dim_with_mask(L, D, Q, mask):
     ----------
     L : H x W x Z x C numpy array of float32
         lookup table
+    D : H x W x Z numpy array of float 32
+        calibrated depth values associated with lookup table
     Q : H x W x C numpy array of float32
         normalized image to query on the lookup table
     mask : H x W numpy of bool
@@ -152,6 +166,8 @@ def lookup_4dim_with_mask(L, D, Q, mask):
     
     Returns
     -------
+    depth_map: H x W numpy array of float32
+        depth value for each pixel
     minD : H x W numpy array of int32
         index of the minimum value along Z axis
     loss_map : H x W numpy array of float32
@@ -183,6 +199,8 @@ def lookup(L, D, Q, mask=None):
     ----------
     L : H x W x Z x C or HW x Z x C numpy array of float32
         lookup table
+    D : H x W x Z or HW x Z numpy array of float 32
+        calibrated depth values associated with lookup table
     Q : H x W x C or HW x C numpy array of float32
         normalized image to query on the lookup table
     mask : H x W or HW numpy of bool, optional
@@ -190,6 +208,8 @@ def lookup(L, D, Q, mask=None):
 
     Returns
     -------
+    depth_map: H x W or HW numpy array of float32
+        depth value for each pixel
     minD : H x W or HW numpy array of int32
         index of the minimum value along Z axis
     loss_map : H x W or HW numpy array of float32
