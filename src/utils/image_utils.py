@@ -283,7 +283,7 @@ def median_blur(image: np.ndarray,
         if len(sizes) == 1:
             sizes = np.repeat(sizes, shape[2])
         else:
-            raise ValueError(f'Either sigmas is a single value or a list that matches the number of channels in image. Received {sigmas}')
+            raise ValueError(f'Either sigmas is a single value or a list that matches the number of channels in image. Received {sizes}')
 
     for idx in range(shape[2]):
         img[:,:,idx] = median_filter(img[:,:,idx], size=sizes[idx], mode='nearest')
@@ -665,3 +665,37 @@ def denoise_fft(image, cutoff: int):
         denoised_image[...,c] = image_filtered
 
     return denoised_image
+
+def canny_edge(image, threshold_1, threshold_2, invert=True):
+    """
+    Parameters
+    ----------
+    image : HxW array
+        image to find Canny edges on.
+        image will be stretched to fill pixel histogram from 0 to 255
+    threshold_1 : int or float
+        this value should be int between 1 and 255 
+        if the value is float between 0 and 1, numpy percentile will
+        be used to find the threshold
+    threshold_2 : int or float
+        this value should be int between 1 and 255
+        if the value is float between 0 and 1, numpy percentile will
+        be used to find the threshold
+    invert : bool, optional
+        flag to indicate if edge should be 1 (invert=False)
+        or if edge should be 0 (invert=True)
+        default is True
+
+    """
+    image = ((image - np.min(image)) / (np.max(image) - np.min(image)) * 255).astype(np.uint8)
+
+    if threshold_1 < 1:
+        threshold_1 = np.percentile(image, threshold_1 * 100)
+    if threshold_2 < 1:
+        threshold_2 = np.percentile(image, threshold_2 * 100)
+
+    canny_mask = cv2.Canny(image, threshold_1, threshold_2, L2gradient=True)
+    canny_mask = (canny_mask / 255.).astype(np.float32)
+    if invert:
+        canny_mask = 1. - canny_mask
+    return canny_mask
