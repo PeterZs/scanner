@@ -143,7 +143,7 @@ def process_position(folder: str,
             normalized = gaussian_blur(normalized, sigmas=int(config.blur_input_sigma))
             # if there is a mask, this won't actually matter
             if mask is not None:
-                normalized[mask] = 0
+                normalized[~mask] = 0
 
         # if config.save_normalized:
             # np.savez_compressed(os.path.join(folder, f"{name}.npz"), pattern=normalized)
