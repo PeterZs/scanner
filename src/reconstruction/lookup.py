@@ -137,7 +137,13 @@ def process_position(folder: str,
             normalized = denoise_fft(normalized, int(config.denoise_cutoff))
 
         if config.blur_input:
+            # to avoid blurring background
+            # TODO: a bit dangerous of an operation with floating point
+            normalized = replace_with_nearest(normalized, '=', 0.)
             normalized = gaussian_blur(normalized, sigmas=int(config.blur_input_sigma))
+            # if there is a mask, this won't actually matter
+            if mask is not None:
+                normalized[mask] = 0
 
         # if config.save_normalized:
             # np.savez_compressed(os.path.join(folder, f"{name}.npz"), pattern=normalized)

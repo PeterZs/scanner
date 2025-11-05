@@ -4,7 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../'))
 from src.reconstruction.lookup import load_lut, process_position, save_reconstruction_outputs, naive_lut, c2f_lut
 from src.reconstruction.configs import LookUp3DConfig, apply_cmdline_args, get_config, is_valid_config
 from src.utils.file_io import get_all_folder_names
-
+from src.utils.image_utils import median_blur, gaussian_blur, replace_with_nearest
 
 def reconstruct(lut, dep, base_path: str, config: LookUp3DConfig):
 
@@ -14,6 +14,15 @@ def reconstruct(lut, dep, base_path: str, config: LookUp3DConfig):
     else:
         depth_map, loss_map, index_map = naive_lut(lut, dep, normalized, config.block_size, config.use_gpu, mask=mask)
 
+    if config.blur_output:
+        replaced_depth_map = replace_with_nearest(depth_map, '<', 0.)
+        if config.blur_output_type == 'median':
+            depth_map = median_blur(replaced_depth_map, config.blur_output_value)
+        elif config.blur_output_type == 'gaussian':
+            depth_map = gaussian_blur(replaced_depth_map, config.blur_output_value)
+        else:
+            if config.verbose:
+                print("Unrcognized type for blurring output:", config.blur_output_type)
     save_reconstruction_outputs(folder=base_path,
                                 mask=mask,
                                 depth_map=depth_map,

@@ -119,6 +119,7 @@ class LookUp3DConfig(ReconstructionConfig):
                 use_binary_mask: bool = False, use_pattern_for_mask: bool = False, mask_thr: float = 0.2,
                 denoise_input: bool = False, denoise_cutoff: int = 0,
                 blur_input: bool = False, blur_input_sigma: float = 0,
+                blur_output: bool = False, blur_output_type: str = '', blur_output_value: float = 0,
                 loss_thr: float = 0.2,
                 is_lowrank: bool = False,
                 use_gpu: bool = False, gpu_device: int = 0, block_size: int = 65536,
@@ -159,6 +160,11 @@ class LookUp3DConfig(ReconstructionConfig):
         self.use_temporal_consistency = use_temporal_consistency
         self.tc_deltas = tc_deltas
         self.tc_blur_sigma = tc_blur_sigma # TODO: consider if blur sigma is necessary here
+
+        # output blurring
+        self.blur_output = blur_output
+        self.blur_output_type = blur_output_type
+        self.blur_output_value = blur_output_value
 
         # output exclusive to lookup
         self.save_loss_map = save_loss_map

@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../'))
 from src.reconstruction.lookup import load_lut, process_position, save_reconstruction_outputs, naive_lut, tc_lut, c2f_lut
-from src.utils.image_utils import replace_with_nearest, gaussian_blur
+from src.utils.image_utils import replace_with_nearest, gaussian_blur, median_blur
 from src.reconstruction.configs import LookUp3DConfig, apply_cmdline_args, get_config, is_valid_config
 from src.utils.file_io import get_all_folders
 import numpy as np
@@ -36,6 +36,15 @@ def reconstruct(lut, dep, base_path: str, config: LookUp3DConfig):
                                                  config.c2f_deltas,
                                                  block_size=config.block_size,
                                                  mask=mask)
+        if config.blur_output:
+            replaced_depth_map = replace_with_nearest(depth_map, '<', 0.)
+            if config.blur_output_type == 'median':
+                depth_map = median_blur(replaced_depth_map, config.blur_output_value)
+            elif config.blur_output_type == 'gaussian':
+                depth_map = gaussian_blur(replaced_depth_map, config.blur_output_value)
+            else:
+                if config.verbose:
+                    print("Unrcognized type for blurring output:", config.blur_output_type)
         save_reconstruction_outputs(folder=frame_path,
                                     mask=mask,
                                     depth_map=depth_map,
@@ -52,6 +61,15 @@ def reconstruct(lut, dep, base_path: str, config: LookUp3DConfig):
                                                    normalized,
                                                    block_size=config.block_size,
                                                    mask=mask)
+        if config.blur_output:
+            replaced_depth_map = replace_with_nearest(depth_map, '<', 0.)
+            if config.blur_output_type == 'median':
+                depth_map = median_blur(replaced_depth_map, config.blur_output_value)
+            elif config.blur_output_type == 'gaussian':
+                depth_map = gaussian_blur(replaced_depth_map, config.blur_output_value)
+            else:
+                if config.verbose:
+                    print("Unrcognized type for blurring output:", config.blur_output_type)
         save_reconstruction_outputs(folder=frame_path,
                                     mask=mask,
                                     depth_map=depth_map,
@@ -72,6 +90,15 @@ def reconstruct(lut, dep, base_path: str, config: LookUp3DConfig):
                                                 (prior_index_map).astype(np.uint16),
                                                 block_size=config.block_size,
                                                 mask=mask)
+        if config.blur_output:
+            replaced_depth_map = replace_with_nearest(depth_map, '<', 0.)
+            if config.blur_output_type == 'median':
+                depth_map = median_blur(replaced_depth_map, config.blur_output_value)
+            elif config.blur_output_type == 'gaussian':
+                depth_map = gaussian_blur(replaced_depth_map, config.blur_output_value)
+            else:
+                if config.verbose:
+                    print("Unrcognized type for blurring output:", config.blur_output_type)
         save_reconstruction_outputs(folder=frame_path,
                                     mask=mask,
                                     depth_map=depth_map,

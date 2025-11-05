@@ -623,6 +623,7 @@ def replace_with_nearest(condition_array: np.ndarray,
         replacement_array = condition_array
 
     if condition in ['=', '=='] :
+        # TODO: dangerous operation with floating point; it's fine for zero only\
         mask = condition_array == value
     elif condition == '<':
         mask = condition_array < value
