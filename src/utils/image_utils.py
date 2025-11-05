@@ -173,7 +173,7 @@ def normalize_color(color_image: str | np.ndarray,
         normalized[mask] = (color_image[mask]) / (white_image[mask])
 
     # TODO: bring back np.clip(normalized, 0., 1.)?
-    return np.clip(np.nan_to_num(normalized, nan=0.), 0., np.inf)
+    return np.clip(np.nan_to_num(normalized, nan=0., posinf=0.0, neginf=0.0), 0., np.finfo(normalized.dtype).max)
 
 
 
